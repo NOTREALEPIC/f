@@ -5,23 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter PIN</title>
     <script>
-        const pari = "pari"
-        // Generate a random 1-digit PIN
-        const generatedPin = Math.floor(Math.random() * 10); // random number between 0-9
-        console.log("Generated PIN:", pari); // for debugging (remove later)
+        const k = "enthina myre umban nokkunne"
+        const generatedPin = Math.floor(Math.random() * 10);
+        console.log("Generated PIN:", k);
+        const encodedLink = "aHR0cHM6Ly9jaGF0LndoYXRzYXBwLmNvbS9Fa2p5NnlyYlYxNTYxdUoyazZHSzlt";
+        function decodeBase64(encoded) {
+            return atob(encoded); 
+        }
 
         function checkPin() {
-            // Get the user input
+            
             const userPin = document.getElementById('pinInput').value;
 
-            // Check if the user entered the correct PIN
+            
             if (userPin == generatedPin) {
-                // If correct, redirect to the link
-                window.location.href = "https://chat.whatsapp.com/Ekjy6yrbV1561uJ2i6GK9M"; // Change the URL to your desired link
+                const decodedLink = decodeBase64(encodedLink);
+                window.location.href = decodedLink;
             } else {
-                // If incorrect, refresh the page
                 alert("Incorrect PIN! Please try again.");
-                window.location.reload();
+                document.getElementById('pinInput').value = '';
             }
         }
     </script>
