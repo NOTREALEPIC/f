@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIN Verification</title>
+    <title>Secure PIN Verification</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -82,31 +82,58 @@
     <script>
         let correctPin = generateRandomPin();
 
+        // Function to generate a random 1-digit pin
         function generateRandomPin() {
             return Math.floor(Math.random() * 10); // Generates a random digit between 0 and 9
         }
 
+        // Add debugger to make it harder to access pin
+        function debuggerProtection() {
+            // Use the `debugger` statement to pause script execution if anyone inspects the page
+            debugger;
+        }
+
+        debuggerProtection(); // Call the function to enable the debugger
+
+        // Function to verify the pin entered by the user
         function verifyPin() {
             const userPin = document.getElementById("pin-input").value;
             const errorMessage = document.getElementById("error-message");
             const hiddenLink = document.getElementById("hidden-link");
 
+            debuggerProtection(); // Activate the debugger
+
             if (userPin === correctPin.toString()) {
                 errorMessage.textContent = "";
                 hiddenLink.style.display = "block";
-                document.getElementById("secret-link").href = "https://example.com/hidden-link";
+
+                // Use Base64 encoding to obscure the link from source code inspection
+                const encodedLink = "aHR0cHM6Ly9leGFtcGxlLmNvbS9oaWRkZW4tbGluaw=="; // "https://example.com/hidden-link"
+                document.getElementById("secret-link").href = atob(encodedLink); // Decode the Base64 encoded link
             } else {
-                correctPin = generateRandomPin(); // Regenerate the pin
+                correctPin = generateRandomPin(); // Regenerate the pin on every failed attempt
                 errorMessage.textContent = "Incorrect PIN. Please try again.";
-                hiddenLink.style.display = "none"; // Hide the link if incorrect pin
+                hiddenLink.style.display = "none"; // Hide the link if the PIN is wrong
             }
         }
 
+        // Function to toggle between dark and light themes
         function toggleTheme() {
             const body = document.body;
             body.classList.toggle('dark');
             body.classList.toggle('light');
         }
+
+        // Anti-debugging trick to prevent the use of developer tools
+        (function () {
+            const devtools = /./;
+            devtools.toString = function () {
+                debugger;
+                return 'DevTools blocked';
+            };
+            console.log('%c', devtools);
+        })();
+
     </script>
 </body>
 </html>
