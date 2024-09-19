@@ -3,44 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter PIN</title>
-    <script>
-        // Generate a random 1-digit PIN
-        const generatedPin = Math.floor(Math.random() * 10); // random number between 0-9
-        console.log("Generated PIN:", generatedPin); // for debugging (remove later)
-
-        // Correct Base64 encoded link
-        // Encoding the URL and replacing URL-unsafe characters
-        const encodedLink = "aHR0cHM6Ly9jaGF0LndoYXRzYXBwLmNvbS9Fa2p5NnlyYlYxNTYxdUoyaTZHSzlt"; // Manually encoded for simplicity
-
-        // Decode the Base64 URL-safe string
-        function decodeBase64UrlSafe(encoded) {
-            // Replace URL-safe characters with the original Base64 characters
-            const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-            return decodeURIComponent(escape(window.atob(base64)));
+    <title>PIN Verification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        function checkPin() {
-            // Get the user input
-            const userPin = document.getElementById('pinInput').value;
+        body.light {
+            background-color: #f5f5f5;
+            color: #333;
+        }
 
-            // Check if the user entered the correct PIN
-            if (userPin == generatedPin) {
-                // If correct, decode the link and redirect
-                const decodedLink = decodeBase64UrlSafe(encodedLink);
-                window.location.href = decodedLink;
+        body.dark {
+            background-color: #333;
+            color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .btn.submit {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn.theme-toggle {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .hidden-link {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="container">
+        <h2>Enter the PIN to Access the Link</h2>
+        <input type="text" id="pin-input" placeholder="Enter 1-digit PIN" maxlength="1">
+        <button class="btn submit" onclick="verifyPin()">Submit</button>
+        <p id="error-message" class="error"></p>
+        <p class="hidden-link" id="hidden-link">
+            <a href="#" id="secret-link">Access Secret Link</a>
+        </p>
+        <button class="btn theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    </div>
+
+    <script>
+        let correctPin = generateRandomPin();
+
+        function generateRandomPin() {
+            return Math.floor(Math.random() * 10); // Generates a random digit between 0 and 9
+        }
+
+        function verifyPin() {
+            const userPin = document.getElementById("pin-input").value;
+            const errorMessage = document.getElementById("error-message");
+            const hiddenLink = document.getElementById("hidden-link");
+
+            if (userPin === correctPin.toString()) {
+                errorMessage.textContent = "";
+                hiddenLink.style.display = "block";
+                document.getElementById("secret-link").href = "https://example.com/hidden-link";
             } else {
-                // If incorrect, show alert and clear the input field
-                alert("Incorrect PIN! Please try again.");
-                document.getElementById('pinInput').value = '';
+                correctPin = generateRandomPin(); // Regenerate the pin
+                errorMessage.textContent = "Incorrect PIN. Please try again.";
+                hiddenLink.style.display = "none"; // Hide the link if incorrect pin
             }
         }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('dark');
+            body.classList.toggle('light');
+        }
     </script>
-</head>
-<body>
-    <h2>Enter PIN to Access the Link</h2>
-    <p>Please enter the one-digit PIN:</p>
-    <input type="text" id="pinInput" maxlength="1" pattern="\d*" required>
-    <button onclick="checkPin()">Submit</button>
 </body>
 </html>
